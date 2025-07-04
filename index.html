@@ -6,9 +6,7 @@
     <title>馨金香控股: 模擬投資競賽</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* --- 全域樣式與字體 --- */
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Orbitron:wght@500;700&display=swap');
-
+        /* CSS 樣式部分保持不變... */
         :root {
             --primary-color: #DAA520; /* 主色調 - 金色 */
             --secondary-color: #00E5FF; /* 輔助色 - 青色 */
@@ -86,7 +84,7 @@
             justify-content: center;
             align-items: center;
             text-align: center;
-            background: linear-gradient(rgba(16, 18, 26, 0.85), rgba(16, 18, 26, 1)), url('https://static.aisnogames.com/aisnoweb/aisno/wqmttw/material/o-frhxpy/20250703-164741.png') no-repeat center center/cover;
+            background: linear-gradient(rgba(16, 18, 26, 0.85), rgba(16, 18, 26, 1)), url('https://placehold.co/1920x1080/10121a/DAA520?text=Sinner%27s+Fate+Exchange') no-repeat center center/cover;
         }
         #page1 h1 {
             font-size: 3.5rem;
@@ -327,7 +325,7 @@
             font-style: italic;
             pointer-events: none;
         }
-        @media (max-width: 1200px) {
+         @media (max-width: 1200px) {
              .chart-cta {
                 transform: none;
                 width: 100%;
@@ -494,7 +492,6 @@
         .leaderboard-table .rank { font-family: var(--font-heading); font-weight: 700; }
         .leaderboard-table .nickname { font-weight: 500; }
         
-        /* 【BUG修正】2. 優化投資組合欄位樣式 */
         .leaderboard-table .portfolio-details {
             padding-top: 0.5rem;
             padding-bottom: 0.5rem;
@@ -571,11 +568,9 @@
         #eventReviewButtons { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1rem; }
         #eventReviewButtons button { background-color: var(--surface-color); border: 1px solid var(--secondary-color); color: var(--secondary-color); padding: 0.5rem 1rem; }
         #eventReviewButtons button:hover { background-color: var(--secondary-color); color: var(--background-color); }
-
     </style>
 </head>
 <body>
-
     <div class="container">
         <div id="page1" class="page">
             <div class="hero-content">
@@ -738,15 +733,40 @@
             <button id="closeEventListBtn" class="next-button">關閉</button>
         </div>
     </div>
+    
+    <script type="module">
+        // 1. 引入 Firebase 的功能模組
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
+
+        // 2. 貼上您的 Firebase 設定碼
+        // 【重要】請將下方物件替換成您從 Firebase 控制台複製的 firebaseConfig
+        const firebaseConfig = {
+            apiKey: "AIzaSyB6Mk9_VEOt3lnuHaBHqz_EIp4tQtI9Jx0",
+            authDomain:  "pathtonowhere-stock-game.firebaseapp.com",
+            databaseURL: "https://your-project-id.firebaseio.com",
+            projectId: "pathtonowhere-stock-game",
+            storageBucket: "pathtonowhere-stock-game.firebasestorage.app",
+            messagingSenderId: "41180687616",
+            appId: "1:41180687616:web:762421d6e98143b45ed7e5",
+            measurementId: "G-QRDCSQ0SXM"
+        };
+
+        // 3. 初始化 Firebase 並取得資料庫參考
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        const dbRef = ref(database, 'sinnerStockGame'); // 您資料庫中的主節點名稱
 
 
-    <script>
+        // 4. 將您原本所有的 JavaScript 程式碼都搬到這個 <script type="module"> 裡面
+        //    這樣才能使用上面的 import 功能
         document.addEventListener('DOMContentLoaded', function() {
+            
             // --- 全域資料與設定 (唯一宣告) ---
             const SinnerData = {
                 baiyi: {
                     name: "白記實業 - 白逸 (Bai Yi)",
-                    avatar: '白逸.png',
+                    avatar: '白逸.jpg',
                     description: "白記實業的日常充滿了醜聞、黑料與營運危機。但憑藉「高超的手段」，一旦站上風口浪尖，就能瞬間扭轉乾坤，帶來一飛衝天的報酬。",
                     events: [
                         { desc: "[正面] 白記實業武力技術獲第九機關、MBCC等單位大力讚揚，獲聘官方顧問。", value: 2.00 },
@@ -773,7 +793,7 @@
                 },
                 angel: {
                     name: "暗網殺手組織 - 安吉爾 (Angel)",
-                    avatar: '安吉爾.png',
+                    avatar: '安吉爾.jpg',
                     description: "安吉爾的行動，總是冷酷且殘酷。每一次事件成功與否，都伴隨著大幅的風險與報酬，投資其組織每日都可能面臨劇烈擺盪。",
                     events: [
                         { desc: "[正面] 成功「清除」競爭對手的所有員工，獨佔了整個西區的地下情報網。", value: 1.10 },
@@ -800,7 +820,7 @@
                 },
                 pearl: {
                     name: "福爾圖娜劇院 - 珀爾夫人 (Lady Pearl)",
-                    avatar: '珀爾夫人.png',
+                    avatar: '珀爾夫人.jpg',
                     description: "劇院的日常充滿了藝術與掌聲，資產如同一場永不落幕的盛大演出般持續增值。但舞台之下，潛藏著足以讓一切瞬間崩塌的致命危機。",
                     events: [
                         { desc: "[正面] 新劇《狄斯之淚》首演大獲成功，被譽為「十年來最偉大的戲劇」。", value: 0.25 },
@@ -827,7 +847,7 @@
                 },
                 irina: {
                     name: "奎恩集團 - 伊琳娜 (Irina)",
-                    avatar: '伊琳娜.png',
+                    avatar: '伊琳娜.jpg',
                     description: "奎恩企業表面上是治理完善的企業，總能有穩定的利多消息。但私下的違規經營與惡意併購，醜聞仍可能東窗事發，看似穩健卻暗藏危機。",
                     events: [
                         { desc: "[正面] 集團憑藉其優秀的企業文化與經營方針，股東會交出超出預期的季度財報。", value: 0.24 },
@@ -854,7 +874,7 @@
                 },
                 daren: {
                     name: "電影工作室 - 黛倫 (Daren)",
-                    avatar: '黛倫.png',
+                    avatar: '黛倫.jpg',
                     description: "在電影事業中，一部驚世駭俗的神作或一次創作上的重大突破，能帶來豐厚回報；但創作瓶頸或是其情緒的波動，也會影響市場的信心。",
                     events: [
                         { desc: "[正面] 世紀回歸！黛倫宣布重返影壇，新片企劃《狄斯卡沒有的答案》引發全城資本瘋狂追逐！", value: 0.41 },
@@ -880,14 +900,12 @@
                     ]
                 }
             };
-
             const INITIAL_FUNDS = 1000000;
             const INITIAL_STOCK_PRICE = 1000;
             const MIN_INVESTMENT = 1000;
-            const DB_KEY = 'sinnerStockGameDB';
             const sensitiveWords = ["管理員", "GM", "官方", "客服", "admin", "幹", "操"];
 
-            let db = {};
+            let db = {}; // 全域的資料庫狀態物件
 
             // DOM elements...
             const pages = document.querySelectorAll('.page');
@@ -923,31 +941,27 @@
             const eventListModalContent = document.getElementById('eventListModalContent');
             const closeEventListBtn = document.getElementById('closeEventListBtn');
 
-
-            // --- Functions ---
-            function initDb() {
-                const storedDb = localStorage.getItem(DB_KEY);
-                if (storedDb) {
-                    try {
-                        db = JSON.parse(storedDb);
-                    } catch (e) {
-                        console.error("Error parsing DB from localStorage", e);
-                        resetDb();
-                    }
-                } else {
-                    resetDb();
-                }
+            // --- 修改後的 Firebase 函式 ---
+            function saveDb() {
+                // 將全域的 db 物件寫入 Firebase
+                set(dbRef, db);
             }
-            
+
             function resetDb() {
-                 db = { players: [], stocks: {}, dailyEvents: [] };
+                 db = {
+                    players: [],
+                    stocks: {},
+                    dailyEvents: []
+                };
                 for (const sinnerId in SinnerData) {
                     db.stocks[sinnerId] = { price: INITIAL_STOCK_PRICE };
                 }
-                saveDb();
+                saveDb(); // 將初始化的資料存到 Firebase
             }
 
-            function saveDb() { localStorage.setItem(DB_KEY, JSON.stringify(db)); }
+            // --- 其他函式不變 (navigateTo, validateInputs, etc.) ---
+            // ... (此處省略未修改的函式，以節省篇幅)
+
             function navigateTo(pageId) {
                 pages.forEach(page => page.classList.remove('active'));
                 const targetPage = document.getElementById(pageId);
@@ -974,9 +988,9 @@
 
             function handlePage1Next() {
                 const uid = uidInput.value.trim();
-                if (db.players.some(p => p.uid === uid)) {
+                if (db.players && db.players.some(p => p.uid === uid)) {
                     alert('此UID已報名，將直接跳轉至排行榜。');
-                    localStorage.setItem('sinnerStockGameUID', uid);
+                    localStorage.setItem('sinnerStockGameUID', uid); // localStorage 仍可用來記住本機使用者
                     renderAllPage3();
                     navigateTo('page3');
                     setTimeout(() => {
@@ -1183,7 +1197,7 @@
             function submitPortfolio() {
                 const uid = uidInput.value.trim();
                 const nickname = nicknameInput.value.trim() || `局長${uid.slice(-4)}`;
-                if (db.players.some(p => p.uid === uid)) {
+                if (db.players && db.players.some(p => p.uid === uid)) {
                     alert('此UID已報名，無法重複提交！'); return;
                 }
                 const portfolio = {};
@@ -1191,13 +1205,18 @@
                     const amount = Number(input.value);
                     if (amount > 0) portfolio[input.dataset.sinner] = amount;
                 });
+                
+                // 確保 players 陣列存在
+                if (!db.players) {
+                    db.players = [];
+                }
                 db.players.push({ uid, nickname, portfolio });
+                
                 localStorage.setItem('sinnerStockGameUID', uid);
-                saveDb();
+                saveDb(); // <-- 這會將更新後的 db 物件存到 Firebase
                 hideConfirmationModal();
                 alert('投資組合提交成功！祝您投資順利！');
-                renderAllPage3();
-                navigateTo('page3');
+                // 不需要手動 render，Firebase 的 onValue 會自動處理
             }
 
             function renderAllPage3() {
@@ -1220,7 +1239,8 @@
 
             function renderLeaderboard() {
                 leaderboardBody.innerHTML = '';
-                if (!db.players || db.players.length === 0) {
+                const players = db.players || [];
+                if (players.length === 0) {
                     leaderboardBody.innerHTML = '<tr><td colspan="6" style="text-align:center; color: var(--text-muted-color);">目前尚無玩家參與。</td></tr>';
                     return;
                 }
@@ -1239,7 +1259,7 @@
                     });
                 }
 
-                const rankedPlayers = db.players.map(player => {
+                const rankedPlayers = players.map(player => {
                     const currentNetWorth = calculateNetWorth(player.portfolio, db.stocks);
                     
                     let dailyChangeText = 'N/A';
@@ -1254,7 +1274,6 @@
                         }
                     }
 
-                    // 【BUG修正】2. 改為產生 HTML 結構
                     let portfolioDetailsHtml = '';
                     for (const sinnerId in player.portfolio) {
                         const initialInvestment = player.portfolio[sinnerId];
@@ -1283,7 +1302,8 @@
 
             function renderTodaysEvents() {
                 todaysEventsGrid.innerHTML = '';
-                const latestDayEvents = db.dailyEvents.length > 0 ? db.dailyEvents[db.dailyEvents.length - 1] : null;
+                const dailyEvents = db.dailyEvents || [];
+                const latestDayEvents = dailyEvents.length > 0 ? dailyEvents[dailyEvents.length - 1] : null;
                 todaysEventsTitle.textContent = latestDayEvents ? `當日事件 (${latestDayEvents.date})` : '當日事件 (尚未開市)';
                 if (!latestDayEvents) {
                     todaysEventsGrid.innerHTML = `<p style="color: var(--text-muted-color); text-align: center; grid-column: 1 / -1;">等待市場開市...</p>`;
@@ -1308,7 +1328,7 @@
             
             function renderHistoricalMarketView() {
                 const tradingDates = ["7/21", "7/22", "7/23", "7/24", "7/25", "7/28", "7/29", "7/30", "7/31", "8/1"];
-                
+                const dailyEvents = db.dailyEvents || [];
                 marketViewGrid.innerHTML = '';
                 let headerHtml = '<div class="market-view-cell market-view-header date-header">交易日</div>';
                 for (const sinnerId in SinnerData) {
@@ -1324,8 +1344,8 @@
                     let rowHtml = `<div class="market-view-cell date-header">${date}</div>`;
                     for (const sinnerId in SinnerData) {
                         let cellContent = '';
-                        if (db.dailyEvents && db.dailyEvents[dateIndex]) {
-                            const eventData = db.dailyEvents[dateIndex].events.find(e => e.sinnerId === sinnerId);
+                        if (dailyEvents[dateIndex]) {
+                            const eventData = dailyEvents[dateIndex].events.find(e => e.sinnerId === sinnerId);
                             if (eventData) {
                                 const impactValue = eventData.change * 100;
                                 const impactClass = impactValue > 0 ? 'positive' : 'negative';
@@ -1340,12 +1360,12 @@
 
                 marketViewMobile.innerHTML = '';
                  tradingDates.forEach((date, dateIndex) => {
-                    if (db.dailyEvents && db.dailyEvents[dateIndex]) {
+                    if (dailyEvents[dateIndex]) {
                         const dayCard = document.createElement('div');
                         dayCard.className = 'market-view-mobile-card';
                         
                         let cardContent = `<h4>${date}</h4>`;
-                        const dayEvents = db.dailyEvents[dateIndex].events;
+                        const dayEvents = dailyEvents[dateIndex].events;
                         
                         for(const sinnerId in SinnerData) {
                             const eventData = dayEvents.find(e => e.sinnerId === sinnerId);
@@ -1385,8 +1405,9 @@
             function buildPlayerManager() {
                 if (!playerManagerBody) return;
                 playerManagerBody.innerHTML = '';
-                if (!db.players || db.players.length === 0) { playerManagerBody.innerHTML = '<tr><td colspan="3" style="text-align:center;">尚無玩家</td></tr>'; return; }
-                db.players.forEach(player => {
+                const players = db.players || [];
+                if (players.length === 0) { playerManagerBody.innerHTML = '<tr><td colspan="3" style="text-align:center;">尚無玩家</td></tr>'; return; }
+                players.forEach(player => {
                     const row = document.createElement('tr');
                     row.innerHTML = `<td>${player.uid}</td><td>${player.nickname}</td><td><button class="delete-player-btn" data-uid="${player.uid}">刪除</button></td>`;
                     playerManagerBody.appendChild(row);
@@ -1395,11 +1416,12 @@
             }
 
             function buildEventHistory() {
-                 if (!eventHistoryBody) return;
+                if (!eventHistoryBody) return;
                 eventHistoryBody.innerHTML = '';
-                if (!db.dailyEvents || db.dailyEvents.length === 0) { eventHistoryBody.innerHTML = '<tr><td colspan="2" style="text-align:center;">尚無更新記錄</td></tr>'; return; }
-                [...db.dailyEvents].reverse().forEach((day, index) => {
-                    const originalIndex = db.dailyEvents.length - 1 - index;
+                const dailyEvents = db.dailyEvents || [];
+                if (dailyEvents.length === 0) { eventHistoryBody.innerHTML = '<tr><td colspan="2" style="text-align:center;">尚無更新記錄</td></tr>'; return; }
+                [...dailyEvents].reverse().forEach((day, index) => {
+                    const originalIndex = dailyEvents.length - 1 - index;
                     const row = document.createElement('tr');
                     row.innerHTML = `<td>${day.date}</td><td><button class="delete-player-btn" data-index="${originalIndex}">刪除本次更新</button></td>`;
                     eventHistoryBody.appendChild(row);
@@ -1438,8 +1460,7 @@
                 if (window.confirm(`您確定要刪除UID為 ${uidToDelete} 的玩家嗎？此操作無法復原。`)) {
                     db.players = db.players.filter(p => p.uid !== uidToDelete);
                     saveDb();
-                    buildPlayerManager();
-                    alert(`玩家 ${uidToDelete} 已被刪除。`);
+                    // onValue 會自動重繪，不需手動呼叫 buildPlayerManager()
                 }
             }
 
@@ -1447,14 +1468,20 @@
                 const indexToDelete = parseInt(event.target.dataset.index);
                 if (window.confirm(`您確定要刪除日期為 ${db.dailyEvents[indexToDelete].date} 的市場更新嗎？這將會回滾所有股價至該天之前！`)) {
                     db.dailyEvents = db.dailyEvents.slice(0, indexToDelete);
-                    for (const sinnerId in SinnerData) { db.stocks[sinnerId].price = INITIAL_STOCK_PRICE; }
+                    
+                    for (const sinnerId in SinnerData) {
+                        db.stocks[sinnerId].price = INITIAL_STOCK_PRICE;
+                    }
+
                     db.dailyEvents.forEach(dayUpdate => {
-                        dayUpdate.events.forEach(event => { db.stocks[event.sinnerId].price *= (1 + event.change); });
+                        dayUpdate.events.forEach(event => {
+                            db.stocks[event.sinnerId].price *= (1 + event.change);
+                        });
                     });
+
                     saveDb();
                     alert('市場狀態已成功回滾！');
-                    buildAdminControls();
-                    buildEventHistory();
+                    // onValue 會自動重繪
                 }
             }
 
@@ -1478,12 +1505,11 @@
                 reader.onload = function(e) {
                     try {
                         const importedDb = JSON.parse(e.target.result);
-                        if (importedDb.players !== undefined && importedDb.stocks !== undefined && importedDb.dailyEvents !== undefined) {
+                        if (importedDb.players !== undefined && importedDb.stocks !== undefined) {
                             if (window.confirm('您確定要匯入資料嗎？這將會覆蓋所有現有數據！')) {
                                 db = importedDb;
                                 saveDb();
-                                alert('資料匯入成功！頁面將重新整理。');
-                                window.location.reload();
+                                alert('資料匯入成功！');
                             }
                         } else { alert('錯誤：檔案格式不符！'); }
                     } catch (err) {
@@ -1499,9 +1525,6 @@
                 if (window.confirm('【極度危險】您確定要重置所有活動資料嗎？所有玩家報名資料和市場事件都將被清空！此操作無法復原！')) {
                     resetDb();
                     alert('所有活動資料已成功重置！');
-                    buildAdminControls();
-                    buildPlayerManager();
-                    buildEventHistory();
                 }
             }
 
@@ -1523,55 +1546,67 @@
                 if (!db.dailyEvents) db.dailyEvents = [];
                 db.dailyEvents.push(dailyUpdate);
                 saveDb();
-                buildAdminControls();
-                buildEventHistory();
                 statusEl.textContent = `市場已於 ${new Date().toLocaleTimeString()} 更新成功！`;
                 statusEl.style.display = 'block';
                 setTimeout(() => { statusEl.style.display = 'none'; }, 5000);
             }
 
-            // --- 初始化與事件綁定 ---
-            initDb();
+            // --- 修改後的主程式進入點 ---
+            function startApp() {
+                // 綁定不會變動的按鈕事件
+                if(closeEventListBtn) closeEventListBtn.addEventListener('click', () => eventListModal.style.display = 'none');
+                if(closeRulesBtn) closeRulesBtn.addEventListener('click', () => rulesModal.style.display = 'none');
+                if(cancelSubmitBtn) cancelSubmitBtn.addEventListener('click', hideConfirmationModal);
+                if(confirmSubmitBtn) confirmSubmitBtn.addEventListener('click', submitPortfolio);
 
-            // 【BUG修正】1. 將Modal關閉事件移至全域，確保總是能被綁定
-            if(closeEventListBtn) closeEventListBtn.addEventListener('click', () => eventListModal.style.display = 'none');
-            if(closeRulesBtn) closeRulesBtn.addEventListener('click', () => rulesModal.style.display = 'none');
-            if(cancelSubmitBtn) cancelSubmitBtn.addEventListener('click', hideConfirmationModal);
-            if(confirmSubmitBtn) confirmSubmitBtn.addEventListener('click', submitPortfolio);
-
-
-            if (window.location.hash === '#admin5784631') {
-                buildAdminControls();
-                buildPlayerManager();
-                buildEventHistory();
-                if(updateMarketBtn) updateMarketBtn.addEventListener('click', updateMarket);
-                if(exportDataBtn) exportDataBtn.addEventListener('click', handleExportData);
-                if(importDataInput) importDataInput.addEventListener('change', handleImportData);
-                if(resetDataBtn) resetDataBtn.addEventListener('click', handleResetData);
-                navigateTo('pageAdmin');
-            } else {
-                const registeredUid = localStorage.getItem('sinnerStockGameUID');
-                if (registeredUid && db.players && db.players.some(p => p.uid === registeredUid)) {
-                    renderAllPage3();
-                    navigateTo('page3');
-                    setTimeout(() => {
-                        const playerRow = document.getElementById(`player-row-${registeredUid}`);
-                        if (playerRow) {
-                            playerRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                            playerRow.classList.add('highlight-row');
-                            setTimeout(() => { playerRow.classList.remove('highlight-row'); }, 3000);
-                        }
-                    }, 100);
+                if (window.location.hash === '#admin5784631') {
+                    buildAdminControls();
+                    buildPlayerManager();
+                    buildEventHistory();
+                    if(updateMarketBtn) updateMarketBtn.addEventListener('click', updateMarket);
+                    if(exportDataBtn) exportDataBtn.addEventListener('click', handleExportData);
+                    if(importDataInput) importDataInput.addEventListener('change', handleImportData);
+                    if(resetDataBtn) resetDataBtn.addEventListener('click', handleResetData);
+                    navigateTo('pageAdmin');
                 } else {
-                    localStorage.removeItem('sinnerStockGameUID');
-                    if(uidInput) uidInput.addEventListener('input', validateInputs);
-                    if(nicknameInput) nicknameInput.addEventListener('input', validateInputs);
-                    if(agreeCheckbox) agreeCheckbox.addEventListener('change', validateInputs);
-                    if(rulesLink) rulesLink.addEventListener('click', () => rulesModal.style.display = 'flex');
-                    if(toPage2Btn) toPage2Btn.addEventListener('click', handlePage1Next);
-                    navigateTo('page1');
+                    const registeredUid = localStorage.getItem('sinnerStockGameUID');
+                    if (registeredUid && db.players && db.players.some(p => p.uid === registeredUid)) {
+                        renderAllPage3();
+                        navigateTo('page3');
+                        setTimeout(() => {
+                            const playerRow = document.getElementById(`player-row-${registeredUid}`);
+                            if (playerRow) {
+                                playerRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                playerRow.classList.add('highlight-row');
+                                setTimeout(() => { playerRow.classList.remove('highlight-row'); }, 3000);
+                            }
+                        }, 100);
+                    } else {
+                        localStorage.removeItem('sinnerStockGameUID');
+                        if(uidInput) uidInput.addEventListener('input', validateInputs);
+                        if(nicknameInput) nicknameInput.addEventListener('input', validateInputs);
+                        if(agreeCheckbox) agreeCheckbox.addEventListener('change', validateInputs);
+                        if(rulesLink) rulesLink.addEventListener('click', () => rulesModal.style.display = 'flex');
+                        if(toPage2Btn) toPage2Btn.addEventListener('click', handlePage1Next);
+                        navigateTo('page1');
+                    }
                 }
             }
+            
+            // 監聽 Firebase 資料庫的變化
+            onValue(dbRef, (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    // 如果雲端有資料，就用雲端的資料更新全域變數
+                    db = data;
+                } else {
+                    // 如果雲端是空的 (第一次執行)，就初始化並上傳
+                    resetDb();
+                }
+                // 無論如何，用最新的資料來啟動或更新整個應用
+                startApp();
+            });
+
         });
     </script>
 </body>
