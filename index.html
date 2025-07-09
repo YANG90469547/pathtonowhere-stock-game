@@ -391,57 +391,12 @@
             const eventListModalTitle = document.getElementById('eventListModalTitle');
             const eventListModalContent = document.getElementById('eventListModalContent');
             const closeEventListBtn = document.getElementById('closeEventListBtn');
-            
-            // 【調整1】將 resetDb 函式增加 gameStarted 旗標
-            function resetDb() {
-                db = {
-                    players: [],
-                    stocks: {},
-                    dailyEvents: [],
-                    gameStarted: false 
-                };
-                for (const sinnerId in SinnerData) {
-                    db.stocks[sinnerId] = { price: INITIAL_STOCK_PRICE };
-                }
-                saveDb();
-            }
 
             function saveDb() { set(dbRef, db); }
-            function navigateTo(pageId) { pages.forEach(page => page.classList.remove('active')); const targetPage = document.getElementById(pageId); if (targetPage) targetPage.classList.add('active'); }
+            function resetDb() { db = { players: [], stocks: {}, dailyEvents: [], gameStarted: false }; for (const sinnerId in SinnerData) { db.stocks[sinnerId] = { price: INITIAL_STOCK_PRICE }; } saveDb(); }
+            function navigateTo(pageId) { pages.forEach(page => page.classList.remove('active')); const targetPage = document.getElementById(pageId); if (targetPage) { targetPage.classList.add('active'); } }
             function validateInputs() { if (!uidInput || !nicknameInput || !agreeCheckbox) return; const uid = uidInput.value.trim(); const nickname = nicknameInput.value.trim(); const isUidValid = /^\d{15}$/.test(uid); uidError.style.display = isUidValid || uid.length === 0 ? 'none' : 'block'; uidInput.classList.toggle('invalid', !isUidValid && uid.length > 0); const foundBadWord = sensitiveWords.find(word => nickname.toLowerCase().includes(word.toLowerCase())); if (nickname.length > 0 && foundBadWord) { nicknameError.style.display = 'block'; nicknameInput.classList.add('invalid'); } else { nicknameError.style.display = 'none'; nicknameInput.classList.remove('invalid'); } toPage2Btn.disabled = !(isUidValid && agreeCheckbox.checked && !foundBadWord); }
-            
-            // 【調整1】修改 handlePage1Next 函式以處理不同遊戲狀態
-            function handlePage1Next() {
-                const uid = uidInput.value.trim();
-                const isRegistered = (db.players || []).some(p => p.uid === uid);
-
-                if (db.gameStarted) {
-                    if (isRegistered) {
-                        navigateTo('page3');
-                        setTimeout(() => {
-                            const playerRow = document.getElementById(`player-row-${uid}`);
-                            if (playerRow) {
-                                playerRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                                playerRow.classList.add('highlight-row');
-                                setTimeout(() => playerRow.classList.remove('highlight-row'), 3000);
-                            }
-                        }, 100);
-                    } else {
-                        alert('抱歉局長，報名階段已過');
-                    }
-                } else {
-                    if (isRegistered) {
-                        alert('此UID已報名，將直接跳轉至排行榜。');
-                        localStorage.setItem('sinnerStockGameUID', uid);
-                        renderAllPage3();
-                        navigateTo('page3');
-                    } else {
-                        buildPortfolioPage();
-                        navigateTo('page2');
-                    }
-                }
-            }
-            
+            function handlePage1Next() { if (db.gameStarted) { const uid = uidInput.value.trim(); if (!uid) return alert('請輸入UID進行查詢。'); const isRegistered = (db.players || []).some(p => p.uid === uid); if (isRegistered) { navigateTo('page3'); setTimeout(() => { const playerRow = document.getElementById(`player-row-${uid}`); if (playerRow) { playerRow.scrollIntoView({ behavior: 'smooth', block: 'center' }); playerRow.classList.add('highlight-row'); setTimeout(() => playerRow.classList.remove('highlight-row'), 3000); } }, 100); } else { alert('抱歉局長，報名階段已過'); } } else { const uid = uidInput.value.trim(); const isRegistered = (db.players || []).some(p => p.uid === uid); if (isRegistered) { alert('此UID已報名，將直接跳轉至排行榜。'); localStorage.setItem('sinnerStockGameUID', uid); navigateTo('page3'); } else { buildPortfolioPage(); navigateTo('page2'); } } }
             function buildPortfolioPage() { if (!portfolioLayout) return; portfolioLayout.innerHTML = ""; for (const sinnerId in SinnerData) { const data = SinnerData[sinnerId]; const card = document.createElement('div'); card.className = 'sinner-investment-card'; const nameParts = data.name.split(' - '); const titleHtml = nameParts.length > 1 ? `${nameParts[0]} - <span class="organization-name">${nameParts[1]}</span>` : data.name; card.innerHTML = `<div class="sinner-header"><h3>${titleHtml}</h3></div><div class="chart-and-info-container"><div class="event-description-box" id="desc-box-${sinnerId}"></div><div class="event-chart-container" data-sinner="${sinnerId}"><img src="${data.avatar}" class="chart-avatar" alt="${data.name} avatar"><canvas id="chart-${sinnerId}"></canvas><p class="chart-cta">*點擊查看命運事件</p></div></div><div class="investment-controls"><div class="investment-display"><label for="${sinnerId}_input">投資金額:</label><span id="${sinnerId}_display">0</span></div><div class="slider-container"><button class="adjust-btn minus-btn" data-sinner-id="${sinnerId}">-</button><input type="range" id="${sinnerId}_input" class="investment-input" data-sinner="${sinnerId}" min="0" max="${INITIAL_FUNDS}" step="${MIN_INVESTMENT}" value="0"><button class="adjust-btn plus-btn" data-sinner-id="${sinnerId}">+</button></div></div>`; portfolioLayout.appendChild(card); } const summary = document.createElement('div'); summary.className = 'portfolio-summary'; summary.innerHTML = '<p>總投資金額: <span id="totalInvestment">0</span> / 1,000,000</p><p>剩餘資金: <span id="remainingFunds">1,000,000</span></p><button id="submitPortfolioBtn" class="submit-portfolio" disabled>提交投資組合</button>'; portfolioLayout.appendChild(summary); document.getElementById('submitPortfolioBtn').addEventListener('click', showConfirmationModal); document.querySelectorAll('.investment-input').forEach(input => input.addEventListener('input', handleInvestmentInput)); document.querySelectorAll('.adjust-btn').forEach(button => button.addEventListener('click', handleAdjustButton)); document.querySelectorAll('.event-chart-container').forEach(container => container.addEventListener('click', (e) => showEventListModal(e.currentTarget.dataset.sinner))); setTimeout(renderAllCharts, 0); updatePortfolioSummary(); }
             function renderAllCharts() { for (const sinnerId in SinnerData) { renderPieChart(sinnerId); } }
             function valueToColor(value, min, max) { if (value === 0) return 'rgba(136, 136, 136, 0.7)'; let r, g, b; if (value > 0) { const ratio = Math.sqrt(value / max); const startColor = [165, 214, 167]; const endColor = [27, 94, 32]; r = startColor[0] + (endColor[0] - startColor[0]) * ratio; g = startColor[1] + (endColor[1] - startColor[1]) * ratio; b = startColor[2] + (endColor[2] - startColor[2]) * ratio; } else { const ratio = Math.sqrt(value / min); const startColor = [239, 154, 154]; const endColor = [183, 28, 28]; r = startColor[0] + (endColor[0] - startColor[0]) * ratio; g = startColor[1] + (endColor[1] - startColor[1]) * ratio; b = startColor[2] + (endColor[2] - startColor[2]) * ratio; } return `rgb(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)})`; }
@@ -454,7 +409,7 @@
             function submitPortfolio() { const uid = uidInput.value.trim(); const nickname = nicknameInput.value.trim() || `局長${uid.slice(-4)}`; const players = db.players || []; if (players.some(p => p.uid === uid)) { return void alert('此UID已報名，無法重複提交！'); } const portfolio = {}; document.querySelectorAll('.investment-input').forEach(input => { const amount = Number(input.value); if (amount > 0) portfolio[input.dataset.sinner] = amount; }); if (!db.players) { db.players = []; } db.players.push({ uid, nickname, portfolio }); localStorage.setItem('sinnerStockGameUID', uid); saveDb(); hideConfirmationModal(); alert('投資組合提交成功！祝您投資順利！'); }
             function renderAllPage3() { renderTodaysEvents(); renderHistoricalMarketView(); renderLeaderboard(); buildEventReviewButtons(); }
             function calculateNetWorth(playerPortfolio, stockPrices) { let netWorth = 0; for (const sinnerId in playerPortfolio) { const initialInvestment = playerPortfolio[sinnerId]; const currentPrice = stockPrices[sinnerId] ? stockPrices[sinnerId].price : INITIAL_STOCK_PRICE; const shares = initialInvestment / INITIAL_STOCK_PRICE; netWorth += shares * currentPrice; } return netWorth; }
-            function renderLeaderboard() { leaderboardBody.innerHTML = ''; const players = db.players || []; if (players.length === 0) { return void(leaderboardBody.innerHTML = '<tr><td colspan="6" style="text-align:center; color: var(--text-muted-color);">目前尚無玩家參與。</td></tr>'); } let previousDayPrices = null; if (db.dailyEvents && db.dailyEvents.length >= 1) { previousDayPrices = {}; for (const sinnerId in SinnerData) { previousDayPrices[sinnerId] = { price: INITIAL_STOCK_PRICE }; } db.dailyEvents.slice(0, db.dailyEvents.length - 1).forEach(dayUpdate => { dayUpdate.events.forEach(event => { previousDayPrices[event.sinnerId].price *= (1 + event.change); }); }); } const rankedPlayers = players.map(player => { const currentNetWorth = calculateNetWorth(player.portfolio, db.stocks); let dailyChangeText = 'N/A'; let dailyChangeClass = ''; if (previousDayPrices) { const previousNetWorth = calculateNetWorth(player.portfolio, previousDayPrices); if (previousNetWorth > 0) { const dailyChange = ((currentNetWorth / previousNetWorth) - 1) * 100; dailyChangeText = (dailyChange >= 0 ? '+' : '') + dailyChange.toFixed(2) + '%'; dailyChangeClass = dailyChange > 0 ? 'positive' : (dailyChange < 0 ? 'negative' : ''); } } let portfolioDetailsHtml = ''; for (const sinnerId in player.portfolio) { const initialInvestment = player.portfolio[sinnerId]; const shares = initialInvestment / INITIAL_STOCK_PRICE; if (shares > 0) { portfolioDetailsHtml += `<div class="portfolio-item">${SinnerData[sinnerId].name.split(" - ")[0]}: <strong>${shares.toFixed(0)}股</strong></div>`; } } return { ...player, netWorth: currentNetWorth, portfolioDetailsHtml, dailyChangeText, dailyChangeClass }; }).sort((a, b) => b.netWorth - a.netWorth); rankedPlayers.forEach((player, index) => { const row = document.createElement('tr'); row.id = `player-row-${player.uid}`; row.innerHTML = `<td class="rank">${index + 1}</td><td class="nickname">${player.nickname}</td><td class="uid">${player.uid}</td><td class="portfolio-details">${player.portfolioDetailsHtml}</td><td class="net-worth">${Math.round(player.netWorth).toLocaleString()}</td><td class="daily-change ${player.dailyChangeClass}">${player.dailyChangeText}</td>`; leaderboardBody.appendChild(row); }); }
+            function renderLeaderboard() { leaderboardBody.innerHTML = ''; const players = db.players || []; if (players.length === 0) { return void(leaderboardBody.innerHTML = '<tr><td colspan="6" style="text-align:center; color: var(--text-muted-color);">目前尚無玩家參與。</td></tr>'); } let previousDayPrices = null; if (db.dailyEvents && db.dailyEvents.length >= 1) { previousDayPrices = {}; for (const sinnerId in SinnerData) { previousDayPrices[sinnerId] = { price: INITIAL_STOCK_PRICE }; } db.dailyEvents.slice(0, db.dailyEvents.length - 1).forEach(dayUpdate => { dayUpdate.events.forEach(event => { previousDayPrices[event.sinnerId].price *= (1 + event.change); }); }); } const rankedPlayers = players.map(player => { const currentNetWorth = calculateNetWorth(player.portfolio, db.stocks); let dailyChangeText = 'N/A'; let dailyChangeClass = ''; if (previousDayPrices) { const previousNetWorth = calculateNetWorth(player.portfolio, previousDayPrices); if (previousNetWorth > 0) { const dailyChange = ((currentNetWorth / previousNetWorth) - 1) * 100; dailyChangeText = (dailyChange >= 0 ? '+' : '') + dailyChange.toFixed(2) + '%'; dailyChangeClass = dailyChange > 0 ? 'positive' : (dailyChange < 0 ? 'negative' : ''); } } let portfolioDetailsHtml = ''; for (const sinnerId in player.portfolio) { const initialInvestment = player.portfolio[sinnerId]; const shares = initialInvestment / INITIAL_STOCK_PRICE; if (shares > 0) { portfolioDetailsHtml += `<div class="portfolio-item">${SinnerData[sinnerId].name.split(" - ")[0]}: <strong>${shares.toFixed(0)}股</strong></div>`; } } return { ...player, netWorth: currentNetWorth, portfolioDetailsHtml, dailyChangeText, dailyChangeClass }; }).sort((a, b) => b.netWorth - a.netWorth); rankedPlayers.forEach((player, index) => { const row = document.createElement('tr'); row.id = `player-row-${player.uid}`; row.innerHTML = `<td class="rank">${index + 1}</td><td class="nickname">${player.nickname}</td><td class="uid">${player.uid}</td><td class="portfolio-details">${portfolioDetailsHtml}</td><td class="net-worth">${Math.round(player.netWorth).toLocaleString()}</td><td class="daily-change ${player.dailyChangeClass}">${player.dailyChangeText}</td>`; leaderboardBody.appendChild(row); }); }
             function renderTodaysEvents() { todaysEventsGrid.innerHTML = ""; const dailyEvents = db.dailyEvents || []; const latestDayEvents = dailyEvents.length > 0 ? dailyEvents[dailyEvents.length - 1] : null; todaysEventsTitle.textContent = latestDayEvents ? `當日事件 (${latestDayEvents.date})` : "當日事件 (尚未開市)"; if (!latestDayEvents) { return void(todaysEventsGrid.innerHTML = '<p style="color: var(--text-muted-color); text-align: center; grid-column: 1 / -1;">等待市場開市...</p>'); } for (const sinnerId in SinnerData) { const eventData = latestDayEvents.events.find(e => e.sinnerId === sinnerId); const card = document.createElement('div'); if (eventData) { const impactValue = eventData.change * 100; const impactClass = impactValue > 0 ? 'positive' : 'negative'; const impactText = (impactValue > 0 ? '+' : '') + impactValue.toFixed(0) + '%'; card.className = `today-event-card ${impactClass}`; card.innerHTML = `<p class="sinner-name">${SinnerData[eventData.sinnerId].name.split(" - ")[0]}</p><p class="event-impact ${impactClass}">${impactText}</p><p class="event-desc">${eventData.eventDesc}</p>`; } else { card.className = 'today-event-card'; card.innerHTML = `<p class="sinner-name">${SinnerData[sinnerId].name.split(" - ")[0]}</p><p class="event-impact">--</p><p class="event-desc">本日無事件</p>`; } todaysEventsGrid.appendChild(card); } }
             function renderHistoricalMarketView() { const tradingDates = ["7/21", "7/22", "7/23", "7/24", "7/25", "7/28", "7/29", "7/30", "7/31", "8/1"]; const dailyEvents = db.dailyEvents || []; marketViewGrid.innerHTML = ""; let headerHtml = '<div class="market-view-cell market-view-header date-header">交易日</div>'; for (const sinnerId in SinnerData) { const nameParts = SinnerData[sinnerId].name.split(" - "); headerHtml += `<div class="market-view-cell market-view-header">${nameParts.length > 1 ? `${nameParts[0]} - <span class="organization-name">${nameParts[1]}</span>` : SinnerData[sinnerId].name}</div>`; } marketViewGrid.innerHTML = headerHtml; tradingDates.forEach((date, dateIndex) => { let rowHtml = `<div class="market-view-cell date-header">${date}</div>`; for (const sinnerId in SinnerData) { let cellContent = ""; if (dailyEvents[dateIndex]) { const eventData = dailyEvents[dateIndex].events.find(e => e.sinnerId === sinnerId); if (eventData) { const impactValue = eventData.change * 100; const impactClass = impactValue > 0 ? 'positive' : 'negative'; const impactText = (impactValue > 0 ? '+' : '') + impactValue.toFixed(0) + '%'; cellContent = `<p class="event-desc">${eventData.eventDesc}</p><span class="event-impact ${impactClass}">${impactText}</span>`; } } rowHtml += `<div class="market-view-cell event-cell">${cellContent}</div>`; } marketViewGrid.innerHTML += rowHtml; }); marketViewMobile.innerHTML = ""; tradingDates.forEach((date, dateIndex) => { if (dailyEvents[dateIndex]) { const dayCard = document.createElement('div'); dayCard.className = 'market-view-mobile-card'; let cardContent = `<h4>${date}</h4>`; const dayEvents = dailyEvents[dateIndex].events; for (const sinnerId in SinnerData) { const eventData = dayEvents.find(e => e.sinnerId === sinnerId); if (eventData) { const impactValue = eventData.change * 100; const impactClass = impactValue > 0 ? 'positive' : 'negative'; const impactText = (impactValue > 0 ? '+' : '') + impactValue.toFixed(0) + '%'; cardContent += `<div class="mobile-event-item"><span class="sinner-name">${SinnerData[sinnerId].name.split(" - ")[0]}</span><p class="event-desc">${eventData.eventDesc}</p><span class="event-impact ${impactClass}">${impactText}</span></div>`; } } dayCard.innerHTML = cardContent; marketViewMobile.appendChild(dayCard); } }); }
             function buildAdminControls() { if (!adminControls) return; adminControls.innerHTML = ""; for (const sinnerId in SinnerData) { const data = SinnerData[sinnerId]; const currentPrice = db.stocks && db.stocks[sinnerId] ? db.stocks[sinnerId].price.toFixed(2) : "N/A"; let optionsHtml = data.events.map((event, index) => { const valueText = (event.value > 0 ? '+' : '') + (event.value * 100).toFixed(0) + '%'; return `<option value="${index}">${valueText} | ${event.desc}</option>`; }).join(""); adminControls.innerHTML += `<div class="sinner-control"><h2>${data.name}</h2><p>目前股價: ${currentPrice} 狄斯幣</p><label for="${sinnerId}_select">選擇今日事件:</label><select id="${sinnerId}_select">${optionsHtml}</select></div>`; } }
@@ -470,14 +425,10 @@
             function updateMarket() { const today = new Date().toLocaleDateString('sv-SE'); if ((db.dailyEvents || []).some(d => d.date === today)) { return void alert(`錯誤：日期 ${today} 的市場已經更新過了！`); } const dailyUpdate = { date: today, events: [] }; for (const sinnerId in SinnerData) { const select = document.getElementById(`${sinnerId}_select`); const eventIndex = parseInt(select.value); const selectedEvent = SinnerData[sinnerId].events[eventIndex]; const oldPrice = db.stocks && db.stocks[sinnerId] ? db.stocks[sinnerId].price : INITIAL_STOCK_PRICE; if (!db.stocks) { db.stocks = {}; } if (!db.stocks[sinnerId]) { db.stocks[sinnerId] = {}; } db.stocks[sinnerId].price = oldPrice * (1 + selectedEvent.value); dailyUpdate.events.push({ sinnerId, eventIndex, eventDesc: selectedEvent.desc, change: selectedEvent.value }); } if (!db.dailyEvents) { db.dailyEvents = []; } db.dailyEvents.push(dailyUpdate); db.gameStarted = true; saveDb(); statusEl.textContent = `市場已於 ${new Date().toLocaleTimeString()} 更新成功！`; statusEl.style.display = 'block'; setTimeout(() => { statusEl.style.display = 'none'; }, 5000); }
             
             function startApp() {
-                const registrationForm = document.getElementById('registrationForm');
-                const registrationClosed = document.getElementById('registrationClosed');
-                
                 if (closeEventListBtn) closeEventListBtn.addEventListener('click', () => eventListModal.style.display = 'none');
                 if (closeRulesBtn) closeRulesBtn.addEventListener('click', () => rulesModal.style.display = 'none');
                 if (cancelSubmitBtn) cancelSubmitBtn.addEventListener('click', hideConfirmationModal);
                 if (confirmSubmitBtn) confirmSubmitBtn.addEventListener('click', submitPortfolio);
-                
                 if (window.location.hash === '#admin5784631') {
                     buildAdminControls();
                     buildPlayerManager();
@@ -489,59 +440,39 @@
                     return void navigateTo('pageAdmin');
                 }
 
-                const registeredUid = localStorage.getItem('sinnerStockGameUID');
-                const players = db.players || [];
-
-                // 【調整1】全新的頁面邏輯
-                // 無論如何，先渲染第三頁的資料，讓所有訪客都能看到
+                // 無論遊戲是否開始，都先渲染一次資料，確保頁面上有內容
                 renderAllPage3();
 
-                // 情況一：遊戲已開始
-                if (db.gameStarted) {
-                    // 隱藏報名表單，顯示截止訊息
-                    if(registrationForm) registrationForm.style.display = 'none';
-                    if(registrationClosed) registrationClosed.style.display = 'block';
-                    
-                    // 修改按鈕文字和功能，純粹用來查詢
-                    toPage2Btn.textContent = "查詢我的資產";
-                    toPage2Btn.disabled = !uidInput.value; // 如果UID欄位是空的，就禁用
-                    uidInput.oninput = () => { toPage2Btn.disabled = !uidInput.value; };
-                    toPage2Btn.onclick = () => {
-                        const uid = uidInput.value.trim();
-                        if (!uid) return alert("請輸入您的UID進行查詢。");
-                        if (!players.some(p => p.uid === uid)) return alert("查無此UID報名資料。");
-                        
-                        // 如果是已報名玩家，跳轉到排行榜
-                        localStorage.setItem('sinnerStockGameUID', uid);
-                        navigateTo('page3');
-                        setTimeout(() => {
-                            const playerRow = document.getElementById(`player-row-${uid}`);
-                            if (playerRow) {
-                                playerRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                                playerRow.classList.add('highlight-row');
-                                setTimeout(() => playerRow.classList.remove('highlight-row'), 3000);
-                            }
-                        }, 100);
-                    };
-                    navigateTo('page3'); // 預設直接顯示排行榜頁面
-                    setTimeout(() => { window.scrollTo(0, 0); }, 100); // 確保從頁面頂部開始
-
+                const registeredUid = localStorage.getItem('sinnerStockGameUID');
+                const players = db.players || [];
+                
+                // 如果是已報名的玩家，直接跳轉到排行榜頁面
+                if (registeredUid && players.some(p => p.uid === registeredUid)) {
+                    navigateTo('page3');
+                    setTimeout(() => {
+                        const playerRow = document.getElementById(`player-row-${registeredUid}`);
+                        if (playerRow) {
+                            playerRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            playerRow.classList.add('highlight-row');
+                            setTimeout(() => playerRow.classList.remove('highlight-row'), 3000);
+                        }
+                    }, 100);
                 } 
-                // 情況二：遊戲尚未開始
+                // 對於所有其他訪客（新訪客或未登入的舊玩家），顯示首頁
                 else {
-                    // 顯示報名表單，隱藏截止訊息
-                    if(registrationForm) registrationForm.style.display = 'block';
-                    if(registrationClosed) registrationClosed.style.display = 'none';
-                    toPage2Btn.textContent = "下一步 / 查詢結果";
-
-                    // 綁定正常的報名/查詢流程
+                    localStorage.removeItem('sinnerStockGameUID');
                     if (uidInput) uidInput.addEventListener('input', validateInputs);
                     if (nicknameInput) nicknameInput.addEventListener('input', validateInputs);
                     if (agreeCheckbox) agreeCheckbox.addEventListener('change', validateInputs);
                     if (rulesLink) rulesLink.addEventListener('click', () => rulesModal.style.display = 'flex');
-                    if (toPage2Btn) toPage2Btn.onclick = handlePage1Next; // 將點擊事件綁定到 handlePage1Next
-
-                    navigateTo('page1');
+                    if (toPage2Btn) toPage2Btn.onclick = handlePage1Next;
+                    
+                    // 如果遊戲已開始，在首頁下方顯示排行榜
+                    if(db.gameStarted) {
+                        navigateTo('page3'); // 直接顯示 Page 3 的所有內容
+                    } else {
+                        navigateTo('page1'); // 遊戲未開始，顯示標準的報名頁
+                    }
                 }
             }
 
@@ -552,7 +483,7 @@
                 } else {
                     console.log("Firebase is empty, initializing database...");
                     resetDb();
-                    return; 
+                    return;
                 }
                 if (db) {
                     startApp();
