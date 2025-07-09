@@ -13,8 +13,9 @@
             --surface-color: #1a1c25;
             --text-color: #e0e0e0;
             --text-muted-color: #888;
-            --positive-color: #F44336;
-            --negative-color: #4CAF50;
+            /* 【調整1】顏色對調 */
+            --positive-color: #F44336; /* 正面改為紅色 */
+            --negative-color: #4CAF50; /* 負面改為綠色 */
             --danger-color: #c0392b;
             --font-heading: 'Orbitron', 'Noto Sans TC', sans-serif;
             --font-body: 'Noto Sans TC', sans-serif;
@@ -112,8 +113,8 @@
         .leaderboard-table th, .leaderboard-table td { padding: 0.8rem 1rem; text-align: left; border-bottom: 1px solid #333; vertical-align: middle; }
         .leaderboard-table thead { background-color: #2a2a2a; }
         .leaderboard-table thead th { color: var(--primary-color); }
-        .leaderboard-table tbody tr:nth-child(-n+10) { background-color: rgba(76, 175, 80, 0.05); }
-        .leaderboard-table tbody tr:nth-last-child(-n+10) { background-color: rgba(244, 67, 54, 0.05); }
+        .leaderboard-table tbody tr:nth-child(-n+10) { background-color: rgba(244, 67, 54, 0.05); } /* Red for top */
+        .leaderboard-table tbody tr:nth-last-child(-n+10) { background-color: rgba(76, 175, 80, 0.05); } /* Green for bottom */
         .leaderboard-table .rank { font-family: var(--font-heading); font-weight: 700; }
         .leaderboard-table .nickname { font-weight: 500; }
         .leaderboard-table .portfolio-details { padding-top: 0.5rem; padding-bottom: 0.5rem; }
@@ -152,17 +153,18 @@
         .modal-buttons button { padding: 0.6rem 1.5rem; border-radius: 5px; font-size: 1rem; }
         #confirmSubmitBtn { background-color: var(--primary-color); color: var(--background-color); border: none; }
         #cancelSubmitBtn { background-color: transparent; color: var(--text-muted-color); border: 1px solid var(--text-muted-color); }
-        #rulesModal .modal-content, #eventListModal .modal-content { text-align: left; max-width: 700px; }
+        #rulesModal .modal-content, #eventListModal .modal-content, #infoModal .modal-content { text-align: left; max-width: 700px; }
+        #infoModal .modal-content { max-width: 400px; text-align: center; }
         #rulesModal ul, #eventListModal ul { padding-left: 1.5rem; margin: 1rem 0; }
         #rulesModal li, #eventListModal li { margin-bottom: 0.5rem; }
         #rulesModal .rule-highlight { color: var(--negative-color); font-weight: bold; }
-        #closeRulesBtn, #closeEventListBtn { display: block; margin: 1.5rem auto 0; }
+        #closeRulesBtn, #closeEventListBtn, #closeInfoBtn { display: block; margin: 1.5rem auto 0; }
         .rules-link { text-decoration: underline; color: var(--secondary-color); cursor: pointer; font-size: 0.9rem; }
         .agree-section { display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-top: 1rem; }
         #eventListModalContent { max-height: 70vh; overflow-y: auto; }
         #eventListModalContent p { padding: 0.5rem; border-radius: 4px; margin-bottom: 0.5rem; display: flex; justify-content: space-between; font-size: 0.9rem; }
-        #eventListModalContent p.positive { background-color: rgba(76, 175, 80, 0.1); }
-        #eventListModalContent p.negative { background-color: rgba(244, 67, 54, 0.1); }
+        #eventListModalContent p.positive { background-color: rgba(244, 67, 54, 0.1); }
+        #eventListModalContent p.negative { background-color: rgba(76, 175, 80, 0.1); }
         #eventListModalContent .event-value { font-weight: 700; }
         #eventListModalContent .event-value.positive { color: var(--positive-color); }
         #eventListModalContent .event-value.negative { color: var(--negative-color); }
@@ -207,29 +209,24 @@
                 <h2>建立您的投資組合</h2>
                 <p style="color: var(--text-muted-color);">將您的100萬狄斯幣分配給您看好的禁閉者。最小投資單位為1千。</p>
             </div>
-            <div id="portfolioLayout" class="portfolio-layout">
-            </div>
+            <div id="portfolioLayout" class="portfolio-layout"></div>
         </div>
         <div id="page3" class="page">
             <h2>命運交易所 - 即時行情</h2>
             <div class="todays-events-section">
                 <h3 id="todaysEventsTitle">當日事件 (尚未開市)</h3>
-                <div id="todaysEventsGrid" class="todays-events-grid">
-                </div>
+                <div id="todaysEventsGrid" class="todays-events-grid"></div>
             </div>
             <div class="market-view-container">
                 <h3>歷史事件回顧</h3>
                 <div id="marketViewContainerDesktop" class="market-view-container-desktop">
-                    <div id="marketViewGrid" class="market-view-grid">
-                    </div>
+                    <div id="marketViewGrid" class="market-view-grid"></div>
                 </div>
-                <div id="marketViewMobile" class="market-view-container-mobile">
-                </div>
+                <div id="marketViewMobile" class="market-view-container-mobile"></div>
             </div>
             <div class="leaderboard-table-container">
                 <h3>玩家資產排行榜</h3>
-                <div id="eventReviewButtons">
-                </div>
+                <div id="eventReviewButtons"></div>
                 <table class="leaderboard-table">
                     <thead>
                         <tr>
@@ -241,8 +238,7 @@
                             <th class="daily-change">單日漲跌</th>
                         </tr>
                     </thead>
-                    <tbody id="leaderboardBody">
-                    </tbody>
+                    <tbody id="leaderboardBody"></tbody>
                 </table>
             </div>
         </div>
@@ -251,16 +247,14 @@
             <div class="admin-section" id="marketUpdater">
                 <h2>市場事件更新</h2>
                 <p>請為每一位禁閉者選擇今天觸發的「命運事件」，然後點擊下方的「更新市場」按鈕。</p>
-                <div id="adminControls">
-                </div>
+                <div id="adminControls"></div>
                 <button id="updateMarketBtn">更新市場</button>
                 <div id="status"></div>
                 <div id="eventHistory">
                     <h3>歷史更新記錄</h3>
                     <table id="eventHistoryTable">
                          <thead><tr><th>日期</th><th>操作</th></tr></thead>
-                         <tbody id="eventHistoryBody">
-                         </tbody>
+                         <tbody id="eventHistoryBody"></tbody>
                     </table>
                 </div>
             </div>
@@ -274,16 +268,15 @@
                             <th>操作</th>
                         </tr>
                     </thead>
-                    <tbody id="playerManagerBody">
-                    </tbody>
+                    <tbody id="playerManagerBody"></tbody>
                 </table>
             </div>
             <div class="admin-section" id="dataManager">
                 <h2>資料管理</h2>
-                <p>您可以匯出目前的完整資料作為備份，或匯入備份檔來還原狀態。</p>
                 <button id="exportDataBtn" class="admin-button">匯出玩家與市場資料</button>
                 <label for="importDataInput" class="file-input-label">匯入資料還原狀態</label>
                 <input type="file" id="importDataInput" accept=".json" style="display: none;">
+                <button id="toggleRegistrationBtn" class="admin-button" style="background-color: #3498db;"></button>
                 <hr style="margin: 2rem 0; border-color: #444;">
                 <p>警告：此操作將會清空所有玩家報名資料及市場事件，並將股價重置為初始狀態。</p>
                 <button id="resetDataBtn" class="admin-button">重置所有資料</button>
@@ -293,8 +286,7 @@
     <div id="confirmationModal" class="modal-overlay">
         <div class="modal-content">
             <h3>確認您的投資組合</h3>
-            <div id="portfolioReview">
-            </div>
+            <div id="portfolioReview"></div>
             <p class="modal-warning">提交後無法修改</p>
             <div class="modal-buttons">
                 <button id="cancelSubmitBtn">返回修改</button>
@@ -319,9 +311,15 @@
     <div id="eventListModal" class="modal-overlay">
         <div class="modal-content">
             <h3 id="eventListModalTitle"></h3>
-            <div id="eventListModalContent">
-            </div>
+            <div id="eventListModalContent"></div>
             <button id="closeEventListBtn" class="next-button">關閉</button>
+        </div>
+    </div>
+    <div id="infoModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 id="infoModalTitle">提示</h3>
+            <p id="infoModalMessage" style="margin-top: 1rem;"></p>
+            <button id="closeInfoBtn" class="next-button">確定</button>
         </div>
     </div>
     
@@ -358,38 +356,64 @@
             const MIN_INVESTMENT = 1000;
             const sensitiveWords = ["管理員", "GM", "官方", "客服", "admin", "幹", "操", "習近平", "習大大", "兩岸", "政治", "白癡", "智障", "低能", "中國", "習"];
             let db = {};
+            let currentInfoModalCallback = null;
+            let isFirstLoad = true;
 
-            const pages = document.querySelectorAll('.page'), uidInput = document.getElementById('uid'), nicknameInput = document.getElementById('nickname'), toPage2Btn = document.getElementById('toPage2Btn'), uidError = document.getElementById('uidError'), nicknameError = document.getElementById('nicknameError'), portfolioLayout = document.getElementById('portfolioLayout'), marketViewGrid = document.getElementById('marketViewGrid'), marketViewMobile = document.getElementById('marketViewMobile'), leaderboardBody = document.getElementById('leaderboardBody'), adminControls = document.getElementById('adminControls'), updateMarketBtn = document.getElementById('updateMarketBtn'), statusEl = document.getElementById('status'), playerManagerBody = document.getElementById('playerManagerBody'), confirmationModal = document.getElementById('confirmationModal'), portfolioReview = document.getElementById('portfolioReview'), confirmSubmitBtn = document.getElementById('confirmSubmitBtn'), cancelSubmitBtn = document.getElementById('cancelSubmitBtn'), todaysEventsGrid = document.getElementById('todaysEventsGrid'), todaysEventsTitle = document.getElementById('todaysEventsTitle'), exportDataBtn = document.getElementById('exportDataBtn'), importDataInput = document.getElementById('importDataInput'), resetDataBtn = document.getElementById('resetDataBtn'), eventHistoryBody = document.getElementById('eventHistoryBody'), agreeCheckbox = document.getElementById('agreeCheckbox'), rulesLink = document.getElementById('rulesLink'), rulesModal = document.getElementById('rulesModal'), closeRulesBtn = document.getElementById('closeRulesBtn'), eventListModal = document.getElementById('eventListModal'), eventListModalTitle = document.getElementById('eventListModalTitle'), eventListModalContent = document.getElementById('eventListModalContent'), closeEventListBtn = document.getElementById('closeEventListBtn');
+            const pages = document.querySelectorAll('.page'), uidInput = document.getElementById('uid'), nicknameInput = document.getElementById('nickname'), toPage2Btn = document.getElementById('toPage2Btn'), uidError = document.getElementById('uidError'), nicknameError = document.getElementById('nicknameError'), portfolioLayout = document.getElementById('portfolioLayout'), marketViewGrid = document.getElementById('marketViewGrid'), marketViewMobile = document.getElementById('marketViewMobile'), leaderboardBody = document.getElementById('leaderboardBody'), adminControls = document.getElementById('adminControls'), updateMarketBtn = document.getElementById('updateMarketBtn'), statusEl = document.getElementById('status'), playerManagerBody = document.getElementById('playerManagerBody'), confirmationModal = document.getElementById('confirmationModal'), portfolioReview = document.getElementById('portfolioReview'), confirmSubmitBtn = document.getElementById('confirmSubmitBtn'), cancelSubmitBtn = document.getElementById('cancelSubmitBtn'), todaysEventsGrid = document.getElementById('todaysEventsGrid'), todaysEventsTitle = document.getElementById('todaysEventsTitle'), exportDataBtn = document.getElementById('exportDataBtn'), importDataInput = document.getElementById('importDataInput'), resetDataBtn = document.getElementById('resetDataBtn'), eventHistoryBody = document.getElementById('eventHistoryBody'), agreeCheckbox = document.getElementById('agreeCheckbox'), rulesLink = document.getElementById('rulesLink'), rulesModal = document.getElementById('rulesModal'), closeRulesBtn = document.getElementById('closeRulesBtn'), eventListModal = document.getElementById('eventListModal'), eventListModalTitle = document.getElementById('eventListModalTitle'), eventListModalContent = document.getElementById('eventListModalContent'), closeEventListBtn = document.getElementById('closeEventListBtn'), infoModal = document.getElementById('infoModal'), infoModalTitle = document.getElementById('infoModalTitle'), infoModalMessage = document.getElementById('infoModalMessage'), closeInfoBtn = document.getElementById('closeInfoBtn'), toggleRegistrationBtn = document.getElementById('toggleRegistrationBtn');
 
-            function saveDb() { set(dbRef, db); }
-            function resetDb() { db = { players: [], stocks: {}, dailyEvents: [], gameStarted: false }; for (const sinnerId in SinnerData) { db.stocks[sinnerId] = { price: INITIAL_STOCK_PRICE }; } saveDb(); }
-            function navigateTo(pageId) { pages.forEach(page => page.classList.remove('active')); const targetPage = document.getElementById(pageId); if (targetPage) { targetPage.classList.add('active'); } }
-            function validateInputs() { if (!uidInput || !nicknameInput || !agreeCheckbox) return; const uid = uidInput.value.trim(); const nickname = nicknameInput.value.trim(); const isUidValid = /^\d{15}$/.test(uid); uidError.style.display = isUidValid || uid.length === 0 ? 'none' : 'block'; uidInput.classList.toggle('invalid', !isUidValid && uid.length > 0); const foundBadWord = sensitiveWords.find(word => nickname.toLowerCase().includes(word.toLowerCase())); if (nickname.length > 0 && foundBadWord) { nicknameError.style.display = 'block'; nicknameInput.classList.add('invalid'); } else { nicknameError.style.display = 'none'; nicknameInput.classList.remove('invalid'); } toPage2Btn.disabled = !(isUidValid && agreeCheckbox.checked && !foundBadWord); }
+            function showInfoModal(message, title = '提示', callback = null) {
+                infoModalTitle.textContent = title;
+                infoModalMessage.textContent = message;
+                infoModal.style.display = 'flex';
+                currentInfoModalCallback = callback;
+            }
+
+            function toggleRegistration() {
+                const isClosed = db.registrationClosed || false;
+                db.registrationClosed = !isClosed;
+                saveDb();
+                showInfoModal(`報名已成功${db.registrationClosed ? '關閉' : '開放'}`);
+            }
+            
+            function updateAdminUI() {
+                if(toggleRegistrationBtn) {
+                    toggleRegistrationBtn.textContent = (db.registrationClosed || false) ? '開放報名' : '關閉報名';
+                }
+            }
+
+            function saveDb(){set(dbRef,db)}
+            function resetDb(){db={players:[],stocks:{},dailyEvents:[],registrationClosed:!1};for(const e in SinnerData)db.stocks[e]={price:INITIAL_STOCK_PRICE};saveDb()}
+            function navigateTo(e){pages.forEach(e=>e.classList.remove("active"));const t=document.getElementById(e);t&&t.classList.add("active")}
+            function validateInputs(){if(!uidInput||!nicknameInput||!agreeCheckbox)return;const e=uidInput.value.trim(),t=nicknameInput.value.trim(),a=/^\d{15}$/.test(e);uidError.style.display=a||0===e.length?"none":"block",uidInput.classList.toggle("invalid",!a&&e.length>0);const n=sensitiveWords.find(e=>t.toLowerCase().includes(e.toLowerCase()));n&&t.length>0?(nicknameError.style.display="block",nicknameInput.classList.add("invalid")):(nicknameError.style.display="none",nicknameInput.classList.remove("invalid")),toPage2Btn.disabled=!(a&&agreeCheckbox.checked&&!n)}
             
             function handlePage1Next() {
                 const uid = uidInput.value.trim();
-                if (!uid) { return; }
+                if (!uid) { return showInfoModal("請先輸入您的UID。"); }
                 const isRegistered = (db.players || []).some(p => p.uid === uid);
 
-                if (db.gameStarted) {
+                if (db.registrationClosed) {
                     if (isRegistered) {
-                        navigateTo('page3');
-                        setTimeout(() => {
-                            const playerRow = document.getElementById(`player-row-${uid}`);
-                            if (playerRow) {
-                                playerRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                                playerRow.classList.add('highlight-row');
-                                setTimeout(() => playerRow.classList.remove('highlight-row'), 3000);
-                            }
-                        }, 100);
+                        showInfoModal('此UID已報名，將為您跳轉至排行榜。', '查詢結果', () => {
+                            localStorage.setItem('sinnerStockGameUID', uid);
+                            navigateTo('page3');
+                            setTimeout(() => {
+                                const playerRow = document.getElementById(`player-row-${uid}`);
+                                if (playerRow) {
+                                    playerRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                    playerRow.classList.add('highlight-row');
+                                    setTimeout(() => playerRow.classList.remove('highlight-row'), 3000);
+                                }
+                            }, 100);
+                        });
                     } else {
-                        alert('抱歉局長，報名階段已過');
+                        showInfoModal('抱歉，報名時間已過。');
                     }
-                } else {
+                } else { 
                     if (isRegistered) {
-                        alert('此UID已報名，將直接跳轉至排行榜。');
-                        localStorage.setItem('sinnerStockGameUID', uid);
-                        navigateTo('page3');
+                        showInfoModal('此UID已報名，將為您跳轉至排行榜。', '查詢結果', () => {
+                            localStorage.setItem('sinnerStockGameUID', uid);
+                            navigateTo('page3');
+                        });
                     } else {
                         buildPortfolioPage();
                         navigateTo('page2');
@@ -399,14 +423,14 @@
             
             function buildPortfolioPage() { if (!portfolioLayout) return; portfolioLayout.innerHTML = ""; for (const sinnerId in SinnerData) { const data = SinnerData[sinnerId]; const card = document.createElement('div'); card.className = 'sinner-investment-card'; const nameParts = data.name.split(' - '); const titleHtml = nameParts.length > 1 ? `${nameParts[0]} - <span class="organization-name">${nameParts[1]}</span>` : data.name; card.innerHTML = `<div class="sinner-header"><h3>${titleHtml}</h3></div><div class="chart-and-info-container"><div class="event-description-box" id="desc-box-${sinnerId}"></div><div class="event-chart-container" data-sinner="${sinnerId}"><img src="${data.avatar}" class="chart-avatar" alt="${data.name} avatar"><canvas id="chart-${sinnerId}"></canvas><p class="chart-cta">*點擊查看命運事件</p></div></div><div class="investment-controls"><div class="investment-display"><label for="${sinnerId}_input">投資金額:</label><span id="${sinnerId}_display">0</span></div><div class="slider-container"><button class="adjust-btn minus-btn" data-sinner-id="${sinnerId}">-</button><input type="range" id="${sinnerId}_input" class="investment-input" data-sinner="${sinnerId}" min="0" max="${INITIAL_FUNDS}" step="${MIN_INVESTMENT}" value="0"><button class="adjust-btn plus-btn" data-sinner-id="${sinnerId}">+</button></div></div>`; portfolioLayout.appendChild(card); } const summary = document.createElement('div'); summary.className = 'portfolio-summary'; summary.innerHTML = '<p>總投資金額: <span id="totalInvestment">0</span> / 1,000,000</p><p>剩餘資金: <span id="remainingFunds">1,000,000</span></p><button id="submitPortfolioBtn" class="submit-portfolio" disabled>提交投資組合</button>'; portfolioLayout.appendChild(summary); document.getElementById('submitPortfolioBtn').addEventListener('click', showConfirmationModal); document.querySelectorAll('.investment-input').forEach(input => input.addEventListener('input', handleInvestmentInput)); document.querySelectorAll('.adjust-btn').forEach(button => button.addEventListener('click', handleAdjustButton)); document.querySelectorAll('.event-chart-container').forEach(container => container.addEventListener('click', (e) => showEventListModal(e.currentTarget.dataset.sinner))); setTimeout(renderAllCharts, 0); updatePortfolioSummary(); }
             function renderAllCharts() { for (const sinnerId in SinnerData) { renderPieChart(sinnerId); } }
-            function valueToColor(value, min, max) { if (value === 0) return 'rgba(136, 136, 136, 0.7)'; let r, g, b; if (value > 0) { const ratio = Math.sqrt(value / max); const startColor = [165, 214, 167]; const endColor = [27, 94, 32]; r = startColor[0] + (endColor[0] - startColor[0]) * ratio; g = startColor[1] + (endColor[1] - startColor[1]) * ratio; b = startColor[2] + (endColor[2] - startColor[2]) * ratio; } else { const ratio = Math.sqrt(value / min); const startColor = [239, 154, 154]; const endColor = [183, 28, 28]; r = startColor[0] + (endColor[0] - startColor[0]) * ratio; g = startColor[1] + (endColor[1] - startColor[1]) * ratio; b = startColor[2] + (endColor[2] - startColor[2]) * ratio; } return `rgb(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)})`; }
+            function valueToColor(value, min, max) { if (value === 0) return 'rgba(136, 136, 136, 0.7)'; let r, g, b; if (value > 0) { const ratio = Math.sqrt(value / max); const startColor = [239, 154, 154]; const endColor = [183, 28, 28]; r = startColor[0] + (endColor[0] - startColor[0]) * ratio; g = startColor[1] + (endColor[1] - startColor[1]) * ratio; b = startColor[2] + (endColor[2] - startColor[2]) * ratio; } else { const ratio = Math.sqrt(value / min); const startColor = [165, 214, 167]; const endColor = [27, 94, 32]; r = startColor[0] + (endColor[0] - startColor[0]) * ratio; g = startColor[1] + (endColor[1] - startColor[1]) * ratio; b = startColor[2] + (endColor[2] - startColor[2]) * ratio; } return `rgb(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)})`; }
             function renderPieChart(sinnerId) { const canvas = document.getElementById(`chart-${sinnerId}`); const descBox = document.getElementById(`desc-box-${sinnerId}`); if (!canvas || !descBox) return; descBox.innerHTML = `<p>${SinnerData[sinnerId].description}</p>`; const ctx = canvas.getContext('2d'); const events = SinnerData[sinnerId].events; const maxPositive = Math.max(...events.map(e => e.value).filter(v => v > 0), 0); const minNegative = Math.min(...events.map(e => e.value).filter(v => v < 0), 0); const chartData = { labels: events.map(e => e.desc), datasets: [{ data: Array(events.length).fill(1), backgroundColor: events.map(e => valueToColor(e.value, minNegative, maxPositive)), borderColor: '#1a1c25', borderWidth: 2, hoverBorderWidth: 4, hoverBorderColor: '#DAA520' }] }; new Chart(ctx, { type: 'doughnut', data: chartData, options: { responsive: true, maintainAspectRatio: false, cutout: '40%', plugins: { legend: { display: false }, tooltip: { enabled: false } } } }); }
             function handleInvestmentInput(event) { const currentSlider = event.target; let totalAllocated = 0; document.querySelectorAll('.investment-input').forEach(input => { if (input !== currentSlider) totalAllocated += Number(input.value); }); const maxAllowed = INITIAL_FUNDS - totalAllocated; if (Number(currentSlider.value) > maxAllowed) { currentSlider.value = maxAllowed; } updatePortfolioSummary(); }
             function handleAdjustButton(event) { const sinnerId = event.target.dataset.sinnerId; const input = document.getElementById(`${sinnerId}_input`); if (!input) return; let currentValue = Number(input.value); let totalAllocated = 0; document.querySelectorAll('.investment-input').forEach(i => { if (i !== input) totalAllocated += Number(i.value); }); const maxAllowed = INITIAL_FUNDS - totalAllocated; if (event.target.classList.contains('plus-btn')) { if (currentValue < maxAllowed) input.value = currentValue + MIN_INVESTMENT; } else if (event.target.classList.contains('minus-btn')) { input.value = Math.max(0, currentValue - MIN_INVESTMENT); } updatePortfolioSummary(); }
             function updatePortfolioSummary() { let total = 0; document.querySelectorAll('.investment-input').forEach(input => { const value = Number(input.value); total += value; const displayEl = document.getElementById(`${input.dataset.sinner}_display`); if (displayEl) displayEl.textContent = value.toLocaleString(); }); const totalInvestmentEl = document.getElementById('totalInvestment'); const remainingFundsEl = document.getElementById('remainingFunds'); const submitPortfolioBtn = document.getElementById('submitPortfolioBtn'); if (totalInvestmentEl) totalInvestmentEl.textContent = total.toLocaleString(); const remaining = INITIAL_FUNDS - total; if (remainingFundsEl) remainingFundsEl.textContent = remaining.toLocaleString(); if (remaining < 0) { if (remainingFundsEl) remainingFundsEl.classList.add('negative'); } else { if (remainingFundsEl) remainingFundsEl.classList.remove('negative'); } if (submitPortfolioBtn) submitPortfolioBtn.disabled = total !== INITIAL_FUNDS; }
             function showConfirmationModal() { let reviewHtml = ''; document.querySelectorAll('.investment-input').forEach(input => { const amount = Number(input.value); if (amount > 0) { const sinnerName = SinnerData[input.dataset.sinner].name; reviewHtml += `<p><span class="sinner-name">${sinnerName}:</span> <span class="amount">${amount.toLocaleString()} 狄斯幣</span></p>`; } }); portfolioReview.innerHTML = reviewHtml; confirmationModal.style.display = 'flex'; }
             function hideConfirmationModal() { confirmationModal.style.display = 'none'; }
-            function submitPortfolio() { const uid = uidInput.value.trim(); const nickname = nicknameInput.value.trim() || `局長${uid.slice(-4)}`; const players = db.players || []; if (players.some(p => p.uid === uid)) { return void alert('此UID已報名，無法重複提交！'); } const portfolio = {}; document.querySelectorAll('.investment-input').forEach(input => { const amount = Number(input.value); if (amount > 0) portfolio[input.dataset.sinner] = amount; }); if (!db.players) { db.players = []; } db.players.push({ uid, nickname, portfolio }); localStorage.setItem('sinnerStockGameUID', uid); saveDb(); hideConfirmationModal(); alert('投資組合提交成功！祝您投資順利！'); }
+            function submitPortfolio() { const uid = uidInput.value.trim(); const nickname = nicknameInput.value.trim() || `局長${uid.slice(-4)}`; const players = db.players || []; if (players.some(p => p.uid === uid)) { return void showInfoModal('此UID已報名，無法重複提交！'); } const portfolio = {}; document.querySelectorAll('.investment-input').forEach(input => { const amount = Number(input.value); if (amount > 0) portfolio[input.dataset.sinner] = amount; }); if (!db.players) { db.players = []; } db.players.push({ uid, nickname, portfolio }); localStorage.setItem('sinnerStockGameUID', uid); saveDb(); hideConfirmationModal(); showInfoModal('投資組合提交成功！祝您投資順利！', '提交成功', () => { navigateTo('page3'); }); }
             function renderAllPage3() { renderTodaysEvents(); renderHistoricalMarketView(); renderLeaderboard(); buildEventReviewButtons(); }
             function calculateNetWorth(playerPortfolio, stockPrices) { let netWorth = 0; if(!playerPortfolio || !stockPrices) return 0; for (const sinnerId in playerPortfolio) { const initialInvestment = playerPortfolio[sinnerId]; const currentPrice = stockPrices[sinnerId] ? stockPrices[sinnerId].price : INITIAL_STOCK_PRICE; const shares = initialInvestment / INITIAL_STOCK_PRICE; netWorth += shares * currentPrice; } return netWorth; }
             function renderLeaderboard() { leaderboardBody.innerHTML = ''; const players = db.players || []; if (players.length === 0) { return void(leaderboardBody.innerHTML = '<tr><td colspan="6" style="text-align:center; color: var(--text-muted-color);">目前尚無玩家參與。</td></tr>'); } let previousDayPrices = null; if (db.dailyEvents && db.dailyEvents.length >= 1) { previousDayPrices = {}; for (const sinnerId in SinnerData) { previousDayPrices[sinnerId] = { price: INITIAL_STOCK_PRICE }; } db.dailyEvents.slice(0, db.dailyEvents.length - 1).forEach(dayUpdate => { dayUpdate.events.forEach(event => { if(previousDayPrices[event.sinnerId]) { previousDayPrices[event.sinnerId].price *= (1 + event.change); } }); }); } const rankedPlayers = players.map(player => { const currentNetWorth = calculateNetWorth(player.portfolio, db.stocks); let dailyChangeText = 'N/A'; let dailyChangeClass = ''; if (previousDayPrices) { const previousNetWorth = calculateNetWorth(player.portfolio, previousDayPrices); if (previousNetWorth > 0) { const dailyChange = ((currentNetWorth / previousNetWorth) - 1) * 100; dailyChangeText = (dailyChange >= 0 ? '+' : '') + dailyChange.toFixed(2) + '%'; dailyChangeClass = dailyChange > 0 ? 'positive' : (dailyChange < 0 ? 'negative' : ''); } } let portfolioDetailsHtml = ''; for (const sinnerId in player.portfolio) { const initialInvestment = player.portfolio[sinnerId]; const shares = initialInvestment / INITIAL_STOCK_PRICE; if (shares > 0) { portfolioDetailsHtml += `<div class="portfolio-item">${SinnerData[sinnerId].name.split(" - ")[0]}: <strong>${shares.toFixed(0)}股</strong></div>`; } } return { ...player, netWorth: currentNetWorth, portfolioDetailsHtml, dailyChangeText, dailyChangeClass }; }).sort((a, b) => b.netWorth - a.netWorth); rankedPlayers.forEach((player, index) => { const row = document.createElement('tr'); row.id = `player-row-${player.uid}`; row.innerHTML = `<td class="rank">${index + 1}</td><td class="nickname">${player.nickname}</td><td class="uid">${player.uid}</td><td class="portfolio-details">${player.portfolioDetailsHtml}</td><td class="net-worth">${Math.round(player.netWorth).toLocaleString()}</td><td class="daily-change ${player.dailyChangeClass}">${player.dailyChangeText}</td>`; leaderboardBody.appendChild(row); }); }
@@ -422,50 +446,55 @@
             function handleExportData() { const dataStr = JSON.stringify(db, null, 2); const dataBlob = new Blob([dataStr], { type: "application/json" }); const url = URL.createObjectURL(dataBlob); const link = document.createElement('a'); link.href = url; link.download = 'sinner_stock_db.json'; document.body.appendChild(link); link.click(); document.body.removeChild(link); URL.revokeObjectURL(url); }
             function handleImportData(event) { const file = event.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = function(e) { try { const importedDb = JSON.parse(e.target.result); if (importedDb.players !== undefined && importedDb.stocks !== undefined) { if (window.confirm('您確定要匯入資料嗎？這將會覆蓋所有現有數據！')) { db = importedDb; saveDb(); alert('資料匯入成功！'); } } else { alert('錯誤：檔案格式不符！'); } } catch (err) { alert('錯誤：讀取檔案失敗，請確認是否為正確的JSON檔案。'); console.error(err); } }; reader.readAsText(file); event.target.value = ''; }
             function handleResetData() { if (window.confirm('【極度危險】您確定要重置所有活動資料嗎？所有玩家報名資料和市場事件都將被清空！此操作無法復原！')) { resetDb(); alert('所有活動資料已成功重置！'); } }
-            function updateMarket() { const today = new Date().toLocaleDateString('sv-SE'); if ((db.dailyEvents || []).some(d => d.date === today)) { return void alert(`錯誤：日期 ${today} 的市場已經更新過了！`); } const dailyUpdate = { date: today, events: [] }; for (const sinnerId in SinnerData) { const select = document.getElementById(`${sinnerId}_select`); const eventIndex = parseInt(select.value); const selectedEvent = SinnerData[sinnerId].events[eventIndex]; const oldPrice = db.stocks && db.stocks[sinnerId] ? db.stocks[sinnerId].price : INITIAL_STOCK_PRICE; if (!db.stocks) { db.stocks = {}; } if (!db.stocks[sinnerId]) { db.stocks[sinnerId] = {}; } db.stocks[sinnerId].price = oldPrice * (1 + selectedEvent.value); dailyUpdate.events.push({ sinnerId, eventIndex, eventDesc: selectedEvent.desc, change: selectedEvent.value }); } if (!db.dailyEvents) { db.dailyEvents = []; } db.dailyEvents.push(dailyUpdate); db.gameStarted = true; saveDb(); statusEl.textContent = `市場已於 ${new Date().toLocaleTimeString()} 更新成功！`; statusEl.style.display = 'block'; setTimeout(() => { statusEl.style.display = 'none'; }, 5000); }
+            function updateMarket() { const today = new Date().toLocaleDateString('sv-SE'); if ((db.dailyEvents || []).some(d => d.date === today)) { return void showInfoModal(`錯誤：日期 ${today} 的市場已經更新過了！`); } const dailyUpdate = { date: today, events: [] }; for (const sinnerId in SinnerData) { const select = document.getElementById(`${sinnerId}_select`); const eventIndex = parseInt(select.value); const selectedEvent = SinnerData[sinnerId].events[eventIndex]; const oldPrice = db.stocks && db.stocks[sinnerId] ? db.stocks[sinnerId].price : INITIAL_STOCK_PRICE; if (!db.stocks) { db.stocks = {}; } if (!db.stocks[sinnerId]) { db.stocks[sinnerId] = {}; } db.stocks[sinnerId].price = oldPrice * (1 + selectedEvent.value); dailyUpdate.events.push({ sinnerId, eventIndex, eventDesc: selectedEvent.desc, change: selectedEvent.value }); } if (!db.dailyEvents) { db.dailyEvents = []; } db.dailyEvents.push(dailyUpdate); db.gameStarted = true; saveDb(); showInfoModal(`市場已於 ${new Date().toLocaleTimeString()} 更新成功！`, '更新成功'); }
             
+            function updateDynamicContent() {
+                if (window.location.hash === '#admin5784631') {
+                    buildAdminControls();
+                    buildPlayerManager();
+                    buildEventHistory();
+                    updateAdminUI();
+                } else {
+                    renderAllPage3();
+                }
+            }
+
             function startApp() {
                 if (closeEventListBtn) closeEventListBtn.addEventListener('click', () => eventListModal.style.display = 'none');
                 if (closeRulesBtn) closeRulesBtn.addEventListener('click', () => rulesModal.style.display = 'none');
                 if (cancelSubmitBtn) cancelSubmitBtn.addEventListener('click', hideConfirmationModal);
                 if (confirmSubmitBtn) confirmSubmitBtn.addEventListener('click', submitPortfolio);
-                if (window.location.hash === '#admin5784631') {
-                    buildAdminControls();
-                    buildPlayerManager();
-                    buildEventHistory();
-                    if (updateMarketBtn) updateMarketBtn.addEventListener('click', updateMarket);
-                    if (exportDataBtn) exportDataBtn.addEventListener('click', handleExportData);
-                    if (importDataInput) importDataInput.addEventListener('change', handleImportData);
-                    if (resetDataBtn) resetDataBtn.addEventListener('click', handleResetData);
-                    return void navigateTo('pageAdmin');
+                if (closeInfoBtn) {
+                    closeInfoBtn.onclick = () => {
+                        infoModal.style.display = 'none';
+                        if (typeof currentInfoModalCallback === 'function') {
+                            currentInfoModalCallback();
+                            currentInfoModalCallback = null;
+                        }
+                    };
                 }
-
-                // 無論如何，都先渲染 Page 3 的內容
-                renderAllPage3();
                 
-                const registeredUid = localStorage.getItem('sinnerStockGameUID');
-                const players = db.players || [];
-
-                if (db.gameStarted) {
-                    // 遊戲已開始，預設顯示 Page 3
-                    navigateTo('page3');
+                if (window.location.hash === '#admin5784631') {
+                    navigateTo('pageAdmin');
                 } else {
-                    // 遊戲未開始
-                    if (registeredUid && players.some(p => p.uid === registeredUid)) {
-                        // 已報名的舊玩家直接看 Page 3
+                    const registeredUid = localStorage.getItem('sinnerStockGameUID');
+                    if (registeredUid && (db.players || []).some(p => p.uid === registeredUid)) {
                         navigateTo('page3');
                     } else {
-                        // 新玩家，顯示報名頁
                         navigateTo('page1');
                     }
                 }
                 
-                // 最後，為首頁按鈕綁定統一的事件處理
+                if (toPage2Btn) toPage2Btn.onclick = handlePage1Next;
                 if (uidInput) uidInput.addEventListener('input', validateInputs);
                 if (nicknameInput) nicknameInput.addEventListener('input', validateInputs);
                 if (agreeCheckbox) agreeCheckbox.addEventListener('change', validateInputs);
                 if (rulesLink) rulesLink.addEventListener('click', () => rulesModal.style.display = 'flex');
-                if (toPage2Btn) toPage2Btn.onclick = handlePage1Next;
+                if (toggleRegistrationBtn) toggleRegistrationBtn.addEventListener('click', toggleRegistration);
+                if (updateMarketBtn) updateMarketBtn.addEventListener('click', updateMarket);
+                if (exportDataBtn) exportDataBtn.addEventListener('click', handleExportData);
+                if (importDataInput) importDataInput.addEventListener('change', handleImportData);
+                if (resetDataBtn) resetDataBtn.addEventListener('click', handleResetData);
             }
 
             onValue(dbRef, (snapshot) => {
@@ -475,10 +504,14 @@
                 } else {
                     console.log("Firebase is empty, initializing database...");
                     resetDb();
-                    return;
+                    return; 
                 }
-                if (db) {
+                
+                if (isFirstLoad) {
+                    isFirstLoad = false;
                     startApp();
+                } else {
+                    updateDynamicContent();
                 }
             });
         });
